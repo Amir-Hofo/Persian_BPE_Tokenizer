@@ -26,7 +26,5 @@ wiki_dataset, blog_dataset, homorich_dataset= preprocess_pipeline_fn()
 merging_datasets= pd.concat([wiki_dataset, blog_dataset, homorich_dataset], ignore_index= True)
 del wiki_dataset, blog_dataset, homorich_dataset
 print(70*"-"), print("preprocessing is done."), print(70*"-")
-
-# merging_datasets= merging_datasets.sample(frac= 1).reset_index(drop= True)
 merging_datasets.to_csv('merging_datasets.csv', index= False, encoding= 'utf-8-sig')
 print(merging_datasets.shape)

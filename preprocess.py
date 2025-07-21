@@ -48,9 +48,10 @@ def preprocess_pipeline_fn():
     print(70*"-"), print("download & load datasets is done."), print(70*"-")
 
     dataset_names= ["Wikipedia", "Persian Blog", "HomoRich"]
-    for i, dataset in enumerate([wiki_dataset, blog_dataset, homorich_dataset]):
-        dataset= uniform_length(preprocess_fn(dataset))
-        eda_dataset(dataset, dataset_names[i])
-        show_short_samples(dataset, dataset_names[i])
-
-    return wiki_dataset, blog_dataset, homorich_dataset
+    datasets= [wiki_dataset, blog_dataset, homorich_dataset]
+    for i in range(len(datasets)):
+        datasets[i]= uniform_length(preprocess_fn(datasets[i]))
+        eda_dataset(datasets[i], dataset_names[i])
+        show_short_samples(datasets[i], dataset_names[i])
+    
+    return datasets[0], datasets[1], datasets[2]

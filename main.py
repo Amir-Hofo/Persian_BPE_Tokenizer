@@ -1,30 +1,41 @@
 from packages import *
-from utils import *
 from preprocess import *
-
-os.system('cls' if os.name == 'nt' else 'clear')
+from tokenizer_training import *
 
 '''
 Datasets:
 https://huggingface.co/datasets/wikimedia/wikipedia
 https://huggingface.co/datasets/RohanAiLab/persian_blog
 https://huggingface.co/datasets/MahtaFetrat/HomoRich-G2P-Persian
---------------------------------------------------------------------
-Future datasets:
-https://huggingface.co/datasets/cis-lmu/GlotCC-V1
-https://huggingface.co/datasets/RohanAiLab/persian_blog_V2
-https://huggingface.co/datasets/tspersian/Persian-Dataset
-https://huggingface.co/datasets/Depositair/Oscar_Persian_Cleaned
---------------------------------------------------------------------
-Processed datasets of more than 10M:
-https://huggingface.co/datasets/mshojaei77/PersianCorpus_merged
-https://huggingface.co/datasets/yeganehmohammadi98/persian-multi-source-corpus
 '''
 
-## merging datasets
-wiki_dataset, blog_dataset, homorich_dataset= preprocess_pipeline_fn()
-merging_datasets= pd.concat([wiki_dataset, blog_dataset, homorich_dataset], ignore_index= True)
-del wiki_dataset, blog_dataset, homorich_dataset
-print(70*"-"), print("preprocessing is done."), print(70*"-")
-merging_datasets.to_csv('merging_datasets.csv', index= False, encoding= 'utf-8-sig')
-print(merging_datasets.shape)
+os.system('cls' if os.name == 'nt' else 'clear')
+
+# dataset= preprocess_pipeline_fn()
+dataset= pd.read_csv("merged_dataset.csv")
+
+tokenizer= tokenizer_training_fn(dataset)
+# tokenizer= Tokenizer.from_file("Persian_BPE_Tokenizer_10K.json")
+
+
+
+
+# # vocab
+# vocab= tokenizer.get_vocab()
+# sorted_vocab= dict(sorted(vocab.items(), key= lambda item: item[1]))
+# print(10 * "--", " vocab ", 10 * "--", "\n",
+# *(f"{token}: {index}" for i, (token, index) in enumerate(sorted_vocab.items()) if i< 10),
+# "...", *(f"{token}: {index}" for token, index in list(sorted_vocab.items())[-5:]), sep=", ")
+
+# # test
+# test_texts= ["این یک متن آزمایشی برای بررسی عملکرد توکنایزر است.",
+#              "دیروز به کتابخانه رفتم و کتابی درباره تاریخ باستان خواندم.",
+#              "سلام! چطور می‌توانم به سرعت زبان فارسی را یاد بگیرم؟",
+#              "هوای تهران امروز خیلی گرم و آفتابی است، ولی شب خنک می‌شود."]
+
+# encoded_text= tokenizer.encode(text)
+# print(10 * "--", " test ", 10 * "--")
+# print("text: ", text)
+# print("tokens: ", encoded_text.tokens)
+# print("ids: ", encoded_text.ids)
+# print("decoded: ", tokenizer.decode(encoded_text.ids))

@@ -1,3 +1,4 @@
+from tokenizers import Tokenizer, models, pre_tokenizers, trainers, processors, decoders
 from datasets import load_dataset
 from hazm import Normalizer
 import pandas as pd

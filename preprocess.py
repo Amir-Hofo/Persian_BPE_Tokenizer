@@ -1,7 +1,7 @@
 from packages import *
 from utils import *
 
-def preprocess_fn(dataset: pd.DataFrame, normaliztion= False, show_sample= False) -> pd.DataFrame:
+def preprocess_fn(dataset: pd.DataFrame, normaliztion= False, show_sample= False, shuffle= False) -> pd.DataFrame:
     # Remove duplicate texts
     dataset= dataset.drop_duplicates(subset='text')
     dataset= dataset.copy()
@@ -37,21 +37,30 @@ def uniform_length(dataset: pd.DataFrame, target_length= 1000) -> pd.DataFrame:
     return pd.DataFrame(chunks, columns= ['text'])
 
 
-def preprocess_pipeline_fn():
+def preprocess_pipeline_fn(eda= False, save_dataset= True):
+    ## load datasets
     wiki_dataset= load_dataset("wikimedia/wikipedia", "20231101.fa")
     wiki_dataset= pd.DataFrame(wiki_dataset['train']['text'], columns= ['text'])
-
     blog_dataset= pd.read_csv("./blogs/blogs.csv")
-
     homorich_dataset= load_dataset("MahtaFetrat/HomoRich-G2P-Persian", verification_mode= "no_checks")
     homorich_dataset= pd.DataFrame(homorich_dataset["train"]["Grapheme"], columns= ['text'])
     print(70*"-"), print("download & load datasets is done."), print(70*"-")
 
+    ## preprocess
     dataset_names= ["Wikipedia", "Persian Blog", "HomoRich"]
     datasets= [wiki_dataset, blog_dataset, homorich_dataset]
+    del wiki_dataset, blog_dataset, homorich_dataset
     for i in range(len(datasets)):
         datasets[i]= uniform_length(preprocess_fn(datasets[i]))
-        eda_dataset(datasets[i], dataset_names[i])
-        show_short_samples(datasets[i], dataset_names[i])
-    
-    return datasets[0], datasets[1], datasets[2]
+        if eda:
+            eda_dataset(datasets[i], dataset_names[i])
+            show_short_samples(datasets[i], dataset_names[i])
+
+    ## merging datasets
+    merged_dataset= pd.concat([datasets[0], datasets[1], datasets[2]], ignore_index= True)
+    del datasets
+    if shuffle: merged_dataset= merged_dataset.sample(frac= 1).reset_index(drop= True)
+    print(70*"-"), print("preprocessing is done."), print(70*"-")
+    if save_dataset: merged_dataset.to_csv('merged_dataset.csv', index= False, encoding= 'utf-8-sig')
+
+    return merged_dataset

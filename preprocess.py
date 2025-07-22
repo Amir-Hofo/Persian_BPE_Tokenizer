@@ -1,7 +1,7 @@
 from packages import *
 from utils import *
 
-def preprocess_fn(dataset: pd.DataFrame, normaliztion= False, show_sample= False, shuffle= False) -> pd.DataFrame:
+def preprocess_fn(dataset: pd.DataFrame, normaliztion= False, show_sample= False) -> pd.DataFrame:
     # Remove duplicate texts
     dataset= dataset.drop_duplicates(subset='text')
     dataset= dataset.copy()
@@ -37,7 +37,7 @@ def uniform_length(dataset: pd.DataFrame, target_length= 1000) -> pd.DataFrame:
     return pd.DataFrame(chunks, columns= ['text'])
 
 
-def preprocess_pipeline_fn(eda= False, save_dataset= True):
+def preprocess_pipeline_fn(eda= False, save_dataset= True, shuffle= False):
     ## load datasets
     wiki_dataset= load_dataset("wikimedia/wikipedia", "20231101.fa")
     wiki_dataset= pd.DataFrame(wiki_dataset['train']['text'], columns= ['text'])

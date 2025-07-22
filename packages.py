@@ -1,8 +1,7 @@
-from tokenizers import Tokenizer, models, pre_tokenizers, trainers, processors, decoders
-from datasets import load_dataset
-from hazm import Normalizer
-import pandas as pd
-import os
-import re
-import requests
+import os, re
 from zipfile import ZipFile
+
+import requests
+import pandas as pd
+from tokenizers import Tokenizer, models, pre_tokenizers, trainers, processors, decoders
+from hazm import Normalizer

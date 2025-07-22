@@ -1,3 +1,5 @@
+from packages import *
+
 def download_blog_dataset():
     url= "https://huggingface.co/datasets/RohanAiLab/persian_blog/resolve/main/blogs.zip"
     output_path= "blogs.zip"
@@ -42,3 +44,16 @@ def show_short_samples(df, dataset_name, max_length= 1000, num_samples= 5):
     else:
         print("هیچ نمونه‌ای با طول کمتر از {max_length} کاراکتر یافت نشد.")
     print("\n")
+
+
+def evaluation_fn(tokenizer: Tokenizer, dataset:pd.DataFrame, samples_number= 10000):
+    dataset= dataset['text'].sample(n= samples_number).to_list()
+    unk_count= sum(text.count("[UNK]") for text in [tokenizer.encode(t).tokens for t in dataset])
+    total_tokens= sum(len(tokenizer.encode(t).tokens) for t in dataset)
+    unk_rate= (unk_count / total_tokens) * 100
+
+    char_counts= [len(t) for t in dataset]
+    token_counts= [len(tokenizer.encode(t).tokens) for t in dataset]
+    compression_ratio= sum(char_counts) / sum(token_counts)
+
+    return unk_rate, compression_ratio
